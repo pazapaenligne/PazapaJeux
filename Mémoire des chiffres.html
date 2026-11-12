@@ -83,6 +83,8 @@ h1.title{font-size:clamp(1.5rem,3.8vw,2rem);font-weight:800;margin:0 0 2px;line-
 .sndgrp{display:flex;gap:8px;margin-left:auto}
 .gbar .sndgrp{margin-left:0}
 .snd.sayc{margin:0 0 6px}
+#home .note.warn{margin:8px 0;justify-content:flex-start}
+.helpCard .note.warn{margin:8px auto}
 .note.warn{background:var(--pz-jaune-clair,#FFF3D6);display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
 .snd.say{margin:0 8px 0 0;vertical-align:middle}
 .help{width:44px;height:44px;border-radius:50%;border:2px solid var(--pz-bleu);background:var(--pz-blanc);color:var(--pz-gris-fonce);font-size:1.4rem;font-weight:800;line-height:1;padding:0}
@@ -96,6 +98,7 @@ h1.title{font-size:clamp(1.5rem,3.8vw,2rem);font-weight:800;margin:0 0 2px;line-
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .gtitle{flex:1;min-width:170px;font-size:clamp(1.05rem,2.6vw,1.35rem);font-weight:800;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.defi{background:var(--pz-jaune-clair,#FFF3D6);color:#6b4b00;padding:3px 12px}   /* C3 : mention discrete a partir de l'etape 8 */
 .dots i{width:18px;height:18px;border-radius:50%;background:var(--pz-gris-clair);border:3px solid var(--pz-gris-clair)}
 .dots i.best{background:var(--pz-jaune-clair);border-color:var(--pz-jaune)}
 .dots i.done{background:var(--pz-jaune);border-color:var(--pz-jaune)}
@@ -138,6 +141,11 @@ h1.title{font-size:clamp(1.5rem,3.8vw,2rem);font-weight:800;margin:0 0 2px;line-
 .seq .d.diff{background:var(--pz-bleu-clair);border-bottom:3px dotted var(--pz-jaune)}
 .sep{color:#b9b9b4;margin:0 2px}
 .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btns[hidden]{display:none}
+/* C1 - reprise de progression : deux grands boutons (Continuer / Recommencer) */
+.resume .btn{flex-direction:column;gap:0;line-height:1.15;min-width:200px;min-height:64px}
+.resume .btn small{font-size:.78em;font-weight:700;opacity:.85}
+.resume .btn.sec{font-size:1.2rem;padding:10px 26px}
 .ok{color:#5C6B12}
 .cf{position:absolute;top:-14px;width:10px;height:14px;border-radius:2px;opacity:.9;animation:fall 2.4s ease-in 1 forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(560px) rotate(300deg);opacity:0}}
@@ -183,6 +191,7 @@ h1.title{font-size:clamp(1.5rem,3.8vw,2rem);font-weight:800;margin:0 0 2px;line-
       <span class="sndgrp"><button class="snd" id="sndGame" type="button" hidden aria-pressed="true" aria-label="Couper la musique d'ambiance" title="Ambiance"><svg class="ic1" viewBox="0 0 48 48" width="28" height="28" aria-hidden="true"><path d="M17 31V13l17-4v18" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M17 31V13l17-4v18" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="13" cy="32" rx="6" ry="4.6" fill="currentColor" stroke="currentColor" stroke-width="1.6"/><ellipse cx="30" cy="28" rx="6" ry="4.6" fill="currentColor" stroke="currentColor" stroke-width="1.6"/></svg><svg class="cut" viewBox="0 0 48 48" width="28" height="28" aria-hidden="true"><path d="M8 40 L40 8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button><button class="snd" id="spkGame" type="button" aria-pressed="true" aria-label="Couper le son" title="Son"><svg class="ic1" viewBox="0 0 48 48" width="28" height="28" aria-hidden="true"><path d="M8 19h8l11-9v28l-11-9H8z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M33 17q4 7 0 14"/><path d="M38 12q8 12 0 24"/></g></svg><svg class="cut" viewBox="0 0 48 48" width="28" height="28" aria-hidden="true"><path d="M8 40 L40 8" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></button></span>
       <button class="help" id="help" type="button" aria-label="Revoir la consigne" hidden>?</button>
       <div class="dots" id="dots" role="img" aria-label=""></div>
+      <span class="etiquette defi" id="defi" hidden aria-hidden="true">D&#233;fi</span>
     </div>
     <div id="sr" class="sr" role="status" aria-live="polite"></div>
     <div id="helpBox" class="veil" hidden>
@@ -204,7 +213,8 @@ h1.title{font-size:clamp(1.5rem,3.8vw,2rem);font-weight:800;margin:0 0 2px;line-
           <button class="snd say sayc" hidden id="sayPrep" type="button" aria-label="&#201;couter la consigne" title="&#201;couter"><svg class="ic1" viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path d="M8 19h8l11-9v28l-11-9H8z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M33 17q4 7 0 14"/><path d="M38 12q8 12 0 24"/></g></svg></button>
           <p class="note" id="prepNote"></p>
           <p class="note warn" id="soundWarn" hidden>Le son est coup&#233;. <button class="btn sec small" id="soundOn" type="button">Activer le son</button></p>
-          <div class="btns"><button class="btn main" id="play" type="button">Jouer</button></div>
+          <div class="btns" id="playBtns"><button class="btn main" id="play" type="button">Jouer</button></div>
+          <div class="btns resume" id="resumeBtns" hidden><button class="btn main" id="cont" type="button">Continuer<small id="contStep"></small></button><button class="btn sec" id="restart" type="button">Recommencer<small>&#233;tape 1</small></button></div>
         </div>
 
         <div id="p-memo" hidden>
@@ -262,6 +272,7 @@ var CONFIG={
   answerDelayMs:500,    /* transition entre memorisation et reponse */
   transitionMs:300,     /* petite pause apres un changement d'ecran, avant de commencer */
   slowFactor:1.6,       /* option "Rythme plus lent" : multiplie les durees ci-dessus */
+  checkDelaySlowMs:1500, /* C6 : meme fenetre de correction quand "Rythme plus lent" est active */
   checkDelayMs:900,     /* fenetre de correction : l'enfant peut appuyer sur Effacer avant la verification automatique */
   steps:10,             /* nombre d'etapes d'un parcours (1 a 10 chiffres) */
   digitMax:10,          /* les chiffres vont de 1 a 10 */
@@ -346,11 +357,28 @@ function spkButtons(){
     b.title=voiceOn?"Couper le son":"Activer le son";
   });
 }
-function warnSound(){var w=$("soundWarn");if(w)w.hidden=!(st.mode&&st.mode.aud&&!voiceOn&&st.state==="PREP");}
+/* Message unique "Le son est coupe." + bouton "Activer le son" (un seul element, deplace selon l'ecran).
+   Affiche : dans un mode d'ecoute sur l'ecran de consigne (comme avant), ou - C4 - quand l'enfant appuie
+   sur un bouton d'ecoute alors que le son est coupe (st.warnAsk = "home" | "prep" | "help"). */
+function warnSound(){
+  var w=$("soundWarn");if(!w)return;
+  var need=!!(st.mode&&st.mode.aud&&!voiceOn&&st.state==="PREP");
+  if(voiceOn)st.warnAsk=null;                                   /* jamais de message apres la reactivation */
+  var ask=st.warnAsk||null;
+  var anchor=ask==="home"?$("sayHome").parentNode:(ask==="help"?$("sayHelp"):null);
+  if(anchor){if(anchor.nextSibling!==w)anchor.parentNode.insertBefore(w,anchor.nextSibling);}
+  else{var pb=$("playBtns");if(w.parentNode!==pb.parentNode||w.nextElementSibling!==pb)pb.parentNode.insertBefore(w,pb);}
+  w.hidden=!(need||ask);
+}
+function askSound(where){                                       /* C4 : bouton d'ecoute presse alors que le son est coupe */
+  st.warnAsk=where;warnSound();announce("Le son est coupé.");
+}
 function spkToggle(){
   voiceOn=!voiceOn;try{window.sessionStorage.setItem("pazapa-memoire-son",voiceOn?"1":"0");}catch(e){}
   spkButtons();
-  if(!voiceOn){stopAcc();if(sfx.el){try{sfx.el.pause();}catch(e){}}syncAmb();}
+  if(!voiceOn){stopAcc();stopResSfx();if(sfx.el){try{sfx.el.pause();}catch(e){}}syncAmb();
+    /* son coupe pendant une memorisation auditive : la lecture des nombres s'arrete aussi ; retour a la consigne (meme etape, aucune penalite) */
+    if(st.mode&&st.mode.aud&&st.state==="MEMO")showPrep(false);}
   warnSound();
   announce(voiceOn?"Son activé.":"Son coupé.");
 }
@@ -456,18 +484,21 @@ function stopAcc(){
   st.accBusy=false;
   if(accEl){try{accEl.onended=null;accEl.onerror=null;accEl.pause();accEl.currentTime=0;}catch(e){}}
 }
+var accId=0;                                              /* C5 : numero de la demande de lecture en cours (une seule a la fois) */
 function playVoice(src,auto){
-  /* voix de l'accueil ou de la consigne : l'ambiance est mise a 0 AVANT la voix, puis reprend apres la fin reelle */
+  /* voix de l'accueil ou de la consigne : l'ambiance est mise a 0 AVANT la voix, puis reprend apres la fin reelle.
+     C5 : un nouvel appui pendant la lecture la fait repartir du debut ; un seul lecteur (accEl), donc jamais deux voix ;
+     seule la demande la plus recente peut demarrer ou terminer la lecture (appuis rapides). */
   if(!voiceOn||!src)return;
-  if(st.accBusy){stopAcc();syncAmb();return;}
+  if(st.accBusy)stopAcc();
   if(!accEl)accEl=new Audio();
-  var tok=st.gen;
+  var tok=st.gen,id=++accId;
   st.accBusy=true;
   var quiet=amb.el&&ambVol()>0.002;
   if(quiet)ambFade(0,250);else syncAmb();
-  function fin(){accEl.onended=null;accEl.onerror=null;if(st.accBusy&&tok===st.gen){st.accBusy=false;syncAmb();}}
+  function fin(){if(id!==accId)return;accEl.onended=null;accEl.onerror=null;if(st.accBusy&&tok===st.gen){st.accBusy=false;syncAmb();}}
   setTimeout(function(){
-    if(tok!==st.gen||!st.accBusy)return;                /* l'enfant a change d'ecran ou arrete la voix */
+    if(id!==accId||tok!==st.gen||!st.accBusy)return;    /* demande remplacee, ecran change ou voix arretee */
     if(accSrc!==src){accEl.src=src;accSrc=src;}
     accEl.onended=fin;accEl.onerror=fin;
     try{accEl.currentTime=0;var pr=accEl.play();if(pr&&pr.catch)pr.catch(function(){fin();});}catch(e){fin();}
@@ -643,9 +674,9 @@ function playDigitAudio(n){
 function setPaz(state){
   /* changement de visuel avec un fondu leger ; meme emplacement et meme taille pour les trois images */
   var im=$("pazImg"),src=PAZ[state]||PAZ.welcome;
-  if(im.getAttribute("src")===src&&im.dataset.state===state)return;
+  clearTimeout(setPaz.t);                                      /* annule tout changement d'image encore en attente (sinon l'ancienne pose reapparaissait) */
+  if(im.getAttribute("src")===src&&im.dataset.state===state){if(im.className.indexOf("fadeout")>=0)im.className="paz "+state;return;}
   var first=!im.getAttribute("src");
-  clearTimeout(setPaz.t);
   var apply=function(){
     im.src=src;im.dataset.state=state;
     im.className="paz";void im.offsetWidth;
@@ -662,7 +693,7 @@ function showPanel(name){syncHelp();
 function slowF(){return st.slow?CONFIG.slowFactor:1;}
 function wait(ms,tok){return new Promise(function(r){setTimeout(function(){r(tok===st.gen);},ms);});}
 function newScreen(){
-  st.gen++;stopAudio();
+  st.gen++;stopAudio();st.warnAsk=null;st.bgPause=false;
   st.starting=false;st.sfxBusy=false;stopAcc();stopResSfx();if(sfx.el){try{sfx.el.pause();}catch(e){}}clearTimeout(st.checkT);
   if(st.helpOpen&&st.state!=="HELPMEMO"){st.helpOpen=false;$("helpBox").hidden=true;}
   [].forEach.call(document.querySelectorAll(".cf"),function(n){if(n.parentNode)n.parentNode.removeChild(n);});   /* plus aucun confetti sur un autre ecran */
@@ -672,6 +703,7 @@ function announce(t){var e=$("sr");e.textContent="";setTimeout(function(){e.text
 function focusMain(id){setTimeout(function(){try{$(id).focus({preventScroll:true});}catch(e){}},80);}
 
 /* kind : "play" (manche en cours), "win" (etape reussie), "idle" (apres une erreur ou avant de jouer) */
+var DEFI_FROM=8;                                       /* C3 : etapes 8, 9 et 10 */
 function renderDots(kind){
   kind=kind||"play";
   var box=$("dots");box.innerHTML="";
@@ -685,6 +717,9 @@ function renderDots(kind){
   }
   var txt="Étape "+st.step+" sur "+CONFIG.steps;
   if(st.best)txt+=", meilleure progression : "+st.best;
+  var defi=st.step>=DEFI_FROM;                         /* C3 : mention "Defi" pres de l'indicateur d'etape (aucun son, aucun score) */
+  $("defi").hidden=!defi;
+  if(defi)txt+=", défi";
   box.setAttribute("aria-label",txt);
 }
 function renderCards(){
@@ -712,7 +747,7 @@ function renderCards(){
    =================================================================== */
 function returnHome(){
   newScreen();
-  st.state="HOME";st.mode=null;
+  st.state="HOME";st.mode=null;st.choice=false;warnSound();
   $("game").hidden=true;$("home").hidden=false;
   renderCards();
 }
@@ -720,6 +755,7 @@ function selectMode(n){
   var m=MODES[n-1];
   newScreen();
   st.mode=m;st.step=1;st.best=loadProgress(n);st.answer=[];
+  st.choice=st.best>=1&&st.best<CONFIG.steps;          /* C1 : Continuer (premiere etape non reussie) ou Recommencer (etape 1) */
   $("home").hidden=true;$("game").hidden=false;
   showPrep(true);
 }
@@ -734,11 +770,14 @@ function showPrep(auto){
   $("prepNote").textContent=noteFor(m);
   $("sayPrep").hidden=!consSrc(m.n);
   warnSound();
-  $("play").disabled=false;
+  $("play").disabled=false;$("cont").disabled=false;$("restart").disabled=false;
+  var ch=!!st.choice;                                  /* C1 : choix de reprise seulement a l'entree dans un mode deja commence */
+  $("playBtns").hidden=ch;$("resumeBtns").hidden=!ch;
+  if(ch)$("contStep").textContent="étape "+(st.best+1);
   renderDots("idle");
   showPanel("prep");
   setPaz("welcome");
-  focusMain("play");
+  focusMain(ch?"cont":"play");
   if(auto&&voiceOn&&consSrc(m.n)){
     /* consigne audio : une seule fois, quand la page est reellement affichee ; jamais a chaque tentative */
     requestAnimationFrame(function(){requestAnimationFrame(function(){
@@ -750,7 +789,10 @@ function generateSequence(len){
   var seq,tries=0,key;
   do{
     seq=[];
-    for(var i=0;i<len;i++)seq.push(1+Math.floor(Math.random()*CONFIG.digitMax));
+    for(var i=0;i<len;i++){                              /* C2 : tirage aleatoire, mais jamais deux nombres identiques a la suite (les repetitions non consecutives restent permises) */
+      var d;do{d=1+Math.floor(Math.random()*CONFIG.digitMax);}while(i>0&&d===seq[i-1]);
+      seq.push(d);
+    }
     key=seq.join(",");tries++;
   }while(key===st.lastSeq[len]&&tries<20);
   st.lastSeq[len]=key;
@@ -773,6 +815,7 @@ function beginMemo(keepSeq){
   var spk=$("spk");spk.style.display=(m.vis?"none":"block");spk.classList.remove("on");
   showPanel("memo");
   setPaz("play");
+  if(document.hidden){st.bgPause=true;return;}           /* A2 : page masquee au moment de demarrer (ex. pendant le bruitage de depart) : la serie attend le retour */
   presentSequence(tok);
 }
 /* Bouton "?" : revoir la consigne sans perdre la progression (aucune penalite, meme serie reprise si besoin) */
@@ -795,7 +838,7 @@ function openHelp(){
 }
 function closeHelp(){
   if(!st.helpOpen)return;
-  st.helpOpen=false;stopAcc();syncAmb();
+  st.helpOpen=false;stopAcc();syncAmb();st.warnAsk=null;warnSound();
   $("helpBox").hidden=true;
   if(st.state==="HELPMEMO"){beginMemo(true);}                  /* meme serie, reprise depuis le debut */
   else if(st.state==="ANSWER"&&st.answer.length>=st.expected.length){scheduleCheck();}
@@ -830,6 +873,10 @@ async function presentSequence(tok){
       var played=await playDigitAudio(n);                         /* se termine a la fin reelle de l'audio */
       if(played===null||tok!==st.gen)return;                      /* annulation volontaire : aucun message, aucune reprise */
       if(!played){audioFailure(tok);return;}                      /* jamais de saisie si un chiffre n'a pas ete prononce */
+      if(m.vis){                                                  /* C7 : meme duree d'affichage que les modes visuels (audio inchange) */
+        var restAV=CONFIG.showMs*f-(Date.now()-t0);
+        if(restAV>0&&!(await wait(restAV,tok)))return;
+      }
     }else{
       var rest=CONFIG.showMs*f-(Date.now()-t0);
       if(rest>0&&!(await wait(rest,tok)))return;
@@ -880,7 +927,7 @@ function scheduleCheck(){
     if(tok!==st.gen||st.state!=="ANSWER"||st.helpOpen||st.answer.length<st.expected.length)return;
     st.state="CHECK";$("erase").disabled=true;      /* reponse figee */
     checkAnswer();
-  },CONFIG.checkDelayMs);
+  },st.slow?CONFIG.checkDelaySlowMs:CONFIG.checkDelayMs);
 }
 function eraseLast(){
   if(st.state!=="ANSWER"||st.helpOpen||!st.answer.length)return;
@@ -998,22 +1045,24 @@ function build(){
     else{if(st.helpOpen){st.helpOpen=false;$("helpBox").hidden=true;}showPrep();}
   });
   $("help").addEventListener("click",openHelp);
-  $("sayHelp").addEventListener("click",function(){unlockAudio();sayHelp();});
+  $("sayHelp").addEventListener("click",function(){if(!voiceOn){askSound("help");return;}unlockAudio();sayHelp();});
   $("soundOn").addEventListener("click",function(){if(!voiceOn)spkToggle();});
   $("sndHome").addEventListener("click",ambToggle);
-  $("sayHome").addEventListener("click",function(){unlockAudio();sayHome();});
-  $("sayPrep").addEventListener("click",function(){unlockAudio();sayPrep();});
+  $("sayHome").addEventListener("click",function(){if(!voiceOn){askSound("home");return;}unlockAudio();sayHome();});
+  $("sayPrep").addEventListener("click",function(){if(!voiceOn){askSound("prep");return;}unlockAudio();sayPrep();});
   $("sndGame").addEventListener("click",ambToggle);
   $("spkGame").addEventListener("click",spkToggle);
   spkButtons();
   $("helpClose").addEventListener("click",closeHelp);
   $("helpBox").addEventListener("click",function(e){if(e.target===this)closeHelp();});
   $("homeDone").addEventListener("click",function(){returnHome();});
-  $("play").addEventListener("click",function(){
+  /* lancement d'une manche ; step (C1) : etape choisie par Continuer ou Recommencer, absent pour Jouer */
+  function launch(step){
     if(st.state!=="PREP"||st.starting)return;            /* pas de double clic */
     if(st.mode.aud&&!voiceOn){warnSound();announce("Le son est coupé. Active le son pour jouer.");try{$("soundOn").focus({preventScroll:true});}catch(e){}return;}
+    if(step){st.step=Math.max(1,Math.min(CONFIG.steps,step));st.choice=false;renderDots("idle");}
     stopAcc();
-    st.starting=true;$("play").disabled=true;unlockAudio();
+    st.starting=true;$("play").disabled=true;$("cont").disabled=true;$("restart").disabled=true;unlockAudio();
     var tok=st.gen;
     st.sfxBusy=true;syncAmb();                           /* 1. oiseaux en sourdine */
     playSfx().then(function(){                           /* 2-3. bruitage, puis on attend sa fin */
@@ -1021,7 +1070,10 @@ function build(){
       st.sfxBusy=false;st.starting=false;
       startRound();                                      /* 4. memorisation */
     });
-  });
+  }
+  $("play").addEventListener("click",function(){launch(0);});
+  $("cont").addEventListener("click",function(){if(st.choice)launch(st.best+1);});
+  $("restart").addEventListener("click",function(){if(st.choice)launch(1);});
   $("erase").addEventListener("click",eraseLast);
   $("retryAudio").addEventListener("click",function(){
     if(st.state!=="AUDIOFAIL")return;
@@ -1035,7 +1087,7 @@ function build(){
   document.addEventListener("keydown",function(e){
     if(e.key==="Escape"&&st.helpOpen){closeHelp();return;}
     if(e.key==="Tab"&&st.helpOpen){               /* le focus reste dans la fenetre d'aide */
-      var f=[$("sayHelp"),$("helpClose")].filter(function(x){return x&&!x.hidden;});
+      var f=[$("sayHelp"),$("soundOn"),$("helpClose")].filter(function(x){return x&&!x.hidden&&$("helpBox").contains(x)&&!x.parentNode.hidden;});
       var i=f.indexOf(document.activeElement);
       e.preventDefault();
       f[(i+(e.shiftKey?-1:1)+f.length)%f.length].focus();
@@ -1047,6 +1099,19 @@ function build(){
     else if(e.key==="0")handleDigitSelection(10);
     else if(e.key==="Backspace"||e.key==="Delete")eraseLast();
   });
+  /* onglet masque, tablette en veille, page quittee : plus aucun son ; une memorisation interrompue reprend au retour (meme serie, depuis le debut, sans penalite) */
+  function goAway(){                                     /* page masquee ou quittee : plus aucun son ; la memorisation en cours est suspendue */
+    stopAcc();stopResSfx();
+    if(st.state==="MEMO"&&!st.bgPause){newScreen();st.bgPause=true;}
+  }
+  function comeBack(){                                   /* retour : meme serie, depuis son premier nombre, une seule fois */
+    if(document.hidden||!st.bgPause)return;
+    st.bgPause=false;
+    if(st.state==="MEMO"&&!st.helpOpen)beginMemo(true);
+  }
+  document.addEventListener("visibilitychange",function(){if(document.hidden)goAway();else comeBack();});
+  window.addEventListener("pagehide",function(){stopAudio();goAway();});      /* A1 : la page peut revenir du cache du navigateur sans visibilitychange */
+  window.addEventListener("pageshow",comeBack);
   preloadAudio();
   loadPazImages();
   ambInit();
