@@ -129,7 +129,7 @@ h1.title{font-size:clamp(1.7rem,4.4vw,2.6rem);font-weight:800;margin:0 0 10px;li
       <span class="round score" id="score">&#11088; Score : 0</span>
       <div class="ctrls">
         <button class="btn sec" id="fs" type="button" aria-label="Plein &#233;cran" title="Plein &#233;cran" hidden></button>
-        <button class="btn sec" id="slow" type="button" aria-pressed="false">&#128034; Ralentir</button>
+        <button class="btn sec" id="slow" type="button" aria-pressed="false">&#9203; Ralentir</button>
         <button class="btn sec" id="hint" type="button">&#128161; Indice</button>
         <button class="btn sec" id="finish" type="button">&#127937; Terminer</button>
       </div>
@@ -393,7 +393,7 @@ function timerMs(){return Math.max(0,tm.elapsed+(tm.running?performance.now()-tm
 function pointsFor(ms){var s=ms/1000;return s<5?100:s<10?80:s<15?60:s<20?40:20;}
 function showScore(){$("score").innerHTML="&#11088; Score : "+st.score.toLocaleString("fr-FR");}
 function syncCtrls(){
-  var s=$("slow");s.setAttribute("aria-pressed",st.slow?"true":"false");s.innerHTML="&#128034; "+(st.slow?"Vitesse normale":"Ralentir");
+  var s=$("slow");s.setAttribute("aria-pressed",st.slow?"true":"false");s.innerHTML="&#9203; "+(st.slow?"Vitesse normale":"Ralentir");
 }
 function newRound(){
   st.screen="PLAY";st.locked=false;
