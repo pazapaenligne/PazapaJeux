@@ -231,7 +231,7 @@ button{font-family:inherit}
     series:6,               /* nombre de series par niveau */
     voice:true,             /* consignes vocales (toujours disponibles, independantes des bruitages) */
     sfxVolume:0.5,          /* volume general des bruitages (0 a 1) */
-    heroScale:0.56,         /* taille de Paze par rapport a la hauteur d'un couloir */
+    heroScale:0.56,         /* taille de Paz par rapport a la hauteur d'un couloir */
     jump:{ms:560, heightFrac:0.45, minAir:2, bufferFrac:0.7},   /* duree du saut (ms), hauteur (part du couloir), hauteur minimale en l'air pour compter comme saut (px), fenetre de memorisation d'un appui fait trop tot pendant un saut (part de la duree, fin du saut) */
     contactInsetPx:2,       /* marge (px) retiree de chaque cote de l'arche pour le contact : zone de validation large, contact franc */
     speedBase:0.15,         /* vitesse de reference (niveau 1 = 100 %) ; niveau 2 = 120 %, niveau 3 = 145 % (voir LEVELS) */
@@ -239,18 +239,18 @@ button{font-family:inherit}
     feedbackMs:800,         /* duree de la correction (jeu immobilise) */
     ruleDelayMs:150,        /* delai avant la lecture d'une consigne */
     /* Phase rubis : 2 groupes de perGroup rubis, chacun dans UN SEUL couloir : d'abord en hauteur (un saut en prend plusieurs), puis au sol (en courant).
-       Les ecarts sont calcules a partir de la vitesse, de la duree du saut et de la taille de Paze (voir startGems). */
+       Les ecarts sont calcules a partir de la vitesse, de la duree du saut et de la taille de Paz (voir startGems). */
     gems:{perGroupHi:3,      /* rubis du groupe haut (un saut normal) */
           perGroupGr:4,      /* rubis du groupe bas (en courant) */
           groundLiftPx:40,   /* hauteur du bas des rubis au sol : au-dessus des petites plantes du decor (36 px) */
           firstXFrac:0.5,    /* position du premier rubis (part de la largeur) */
           rubyW:46,          /* largeur d'un rubis (px, voir CSS .ruby) */
-          reachPx:0,         /* portee supplementaire devant Paze : 0 = contact reel uniquement */
+          reachPx:0,         /* portee supplementaire devant Paz : 0 = contact reel uniquement */
           slackMs:600,       /* marge de synchronisation du saut : un saut demarre dans cette marge attrape les 4 rubis hauts */
           groundSpacing:1.6, /* ecart des rubis au sol (en largeurs de rubis) */
           transitionMs:850}, /* temps entre le dernier rubis haut et le premier rubis au sol (atterrissage + changement de couloir) */
     pointsGood:10,          /* bonne reponse pedagogique */
-    pointsRuby:5,           /* rubis attrape par Paze (bonus) */
+    pointsRuby:5,           /* rubis attrape par Paz (bonus) */
     pauseBetweenWaves:300,  /* ms de reflexion avant une nouvelle serie (apres la consigne) */
     clearMs:300,            /* duree de la phase de disparition des arches apres une serie */
     ruleMinMs:1400,         /* attente minimale apres l'affichage de la consigne (si pas de voix) */
@@ -629,7 +629,7 @@ button{font-family:inherit}
     return ln.offsetTop+(ln.offsetHeight-FLOOR)-hero.offsetHeight+4;
   }
   function moveHero(i,instant){
-    if(st.phase===S.FEEDBACK)return;      /* pendant la correction, Paze est immobilise */
+    if(st.phase===S.FEEDBACK)return;      /* pendant la correction, Paz est immobilise */
     var changed=(i!==st.sel);
     st.sel=i;      /* la voie logique change tout de suite : aucune attente avant de pouvoir sauter */
     lanes.forEach(function(l,k){l.classList.toggle("sel",k===i);});
@@ -680,16 +680,16 @@ button{font-family:inherit}
     j.y=u*st.geo.Lh*CONFIG.jump.heightFrac;
     heroJump.style.transform="translateY("+(-j.y)+"px)";
   }
-  /* Zone de collision de Paze (hauteurs mesurees depuis le sol du couloir).
+  /* Zone de collision de Paz (hauteurs mesurees depuis le sol du couloir).
      reach = portee avant supplementaire (zone genereuse pour un enfant de 6-7 ans). */
   function heroBox(){
     var hl=hero.offsetLeft,hw=hero.offsetWidth,hh=st.geo.hh;
     return {x0:hl+hw*0.10,x1:hl+hw*0.90,y0:st.jump.y-4,y1:st.jump.y-4+hh*0.95};
   }
-  /* Bas de la zone de validation des arches : legerement sous la tete de Paze debout.
-     Elle ne suffit pas a elle seule : il faut aussi que Paze soit reellement en l'air (voir checkArches). */
+  /* Bas de la zone de validation des arches : legerement sous la tete de Paz debout.
+     Elle ne suffit pas a elle seule : il faut aussi que Paz soit reellement en l'air (voir checkArches). */
   function touchZoneBottom(){return -4+st.geo.hh*0.95-6;}
-  /* Hauteur des rubis en hauteur : au-dessus de la tete de Paze debout, donc inatteignables sans saut */
+  /* Hauteur des rubis en hauteur : au-dessus de la tete de Paz debout, donc inatteignables sans saut */
   function groundRubyBottom(){return Math.round(Math.max(2,Math.min(CONFIG.gems.groundLiftPx,st.geo.Lh-42,st.geo.hh*0.95-12)));}
   function highRubyBottom(){return Math.round(Math.max(groundRubyBottom()+4,Math.min(-4+st.geo.hh*0.95+8,st.geo.Lh-42)));}
 
@@ -810,13 +810,13 @@ button{font-family:inherit}
       sfx("pop");
     }
     d.el.appendChild(mk);
-    stage.classList.add("still");     /* decor et course de Paze figes */
+    stage.classList.add("still");     /* decor et course de Paz figes */
   }
   function endFeedback(){
     stage.classList.remove("still");hero.classList.remove("cheer");
     endLetters();
   }
-  /* Collision arche / Paze : des que Paze (au sol ou en l'air) touche l'arche de SON couloir, la reponse est evaluee.
+  /* Collision arche / Paz : des que Paz (au sol ou en l'air) touche l'arche de SON couloir, la reponse est evaluee.
      Aucun saut n'est necessaire. La zone de l'arche est balayee sur le deplacement de l'image (sv) pour qu'aucune arche
      ne puisse etre traversee entre deux images, meme a grande vitesse ou sur une tablette lente. */
   function checkArches(sv){
@@ -831,7 +831,7 @@ button{font-family:inherit}
     if(hit)startFeedback(hit);
   }
 
-  /* ---- Rubis : objets du parcours, attrapes par contact avec Paze ---- */
+  /* ---- Rubis : objets du parcours, attrapes par contact avec Paz ---- */
   function addRuby(x,lane,hi){
     var bottom=hi?highRubyBottom():groundRubyBottom();
     var el=document.createElement("div");el.className="ruby in"+(hi?" hi":"");
@@ -842,13 +842,13 @@ button{font-family:inherit}
   }
   /* GEM_RUN : deux groupes de 4 rubis. Chaque groupe reste dans un seul couloir (aucun changement de couloir entre deux rubis d'un meme groupe).
      Groupe 1 : en hauteur, serres : un saut bien synchronise en attrape plusieurs, voire les 4.
-     Groupe 2 : pres du sol, en courant. Les distances sont calculees (vitesse du defilement, duree du saut, taille de Paze). */
+     Groupe 2 : pres du sol, en courant. Les distances sont calculees (vitesse du defilement, duree du saut, taille de Paz). */
   function gemReach(){return CONFIG.gems.reachPx;}
   function startGems(){
     var W=stage.offsetWidth,g=CONFIG.gems,nH=g.perGroupHi,nG=g.perGroupGr,k;
     var v=W*st.level.speed/1000;                          /* px par ms */
     var b=heroBox(false),boxW=b.x1-b.x0;
-    var airMs=CONFIG.jump.ms*0.88;                        /* duree pendant laquelle Paze est assez haut pour toucher un rubis haut */
+    var airMs=CONFIG.jump.ms*0.88;                        /* duree pendant laquelle Paz est assez haut pour toucher un rubis haut */
     var span=boxW+2*20+gemReach()+v*airMs;                /* longueur de parcours qu'un seul saut peut balayer */
     var hiSp=Math.round(Math.max(g.rubyW*1.0,Math.min(g.rubyW*1.8,(span-v*g.slackMs)/(nH-1))));
     var grSp=Math.round(g.rubyW*g.groundSpacing);
@@ -873,7 +873,7 @@ button{font-family:inherit}
     var hl=hero.offsetLeft,hw=hero.offsetWidth,b=heroBox(false),rx1=b.x1+gemReach();
     st.rubiesOn.slice().forEach(function(r){
       r.x-=v;r.el.style.left=r.x+"px";
-      /* contact reel : meme couloir, recouvrement horizontal ET vertical avec Paze (saut compris) */
+      /* contact reel : meme couloir, recouvrement horizontal ET vertical avec Paz (saut compris) */
       if(r.lane===st.sel&&r.x+20>=b.x0&&r.x-20<=rx1&&b.y1>=r.bottom&&b.y0<=r.bottom+38){collectRuby(r);return;}
       if(r.x<hl+hw*0.15&&!r.miss){r.miss=true;r.el.classList.add("miss");}
       if(r.x<-40){
@@ -1032,7 +1032,7 @@ button{font-family:inherit}
   /* ===================================================================
      EVENEMENTS
      =================================================================== */
-  /* Toucher un couloir : deplace Paze (ne valide jamais une arche) */
+  /* Toucher un couloir : deplace Paz (ne valide jamais une arche) */
   lanes.forEach(function(ln,i){
     ln.addEventListener("pointerdown",function(){
       if(!st.running||st.paused)return;
