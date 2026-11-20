@@ -185,8 +185,7 @@ button{font-family:inherit}
       <span class="info"><span class="gemi"></span> <b id="rub">0</b></span>
       <span class="info">Score <b id="score">0</b></span>
       <span class="info chrono" id="chrono">00:00</span>
-      <button class="ib" id="rep" title="R&eacute;&eacute;couter la consigne" aria-label="R&eacute;&eacute;couter la consigne">&#128266;</button>
-      <button class="ib" id="snd" title="Bruitages" aria-label="Activer ou couper les bruitages">&#128276;</button>
+      <button class="ib" id="rep" title="Écouter la consigne (cliquer encore pour couper le son)" aria-label="Écouter la consigne ; cliquer encore pour couper le son">&#128266;</button>
       <button class="ib" id="pau" title="Pause" aria-label="Pause">&#9208;</button>
       <button class="ib" id="home" title="Menu" aria-label="Retour au menu">&#127968;</button>
     </div>
@@ -701,12 +700,14 @@ button{font-family:inherit}
   }
   function readRule(next){
     st.afterSay=next||null;st.hold=true;
-    say(INSTR[st.kind],function(){
+    var finish=function(){
       $("banner").style.opacity=0;      /* la consigne reste affichee pendant toute la lecture */
-      st.hold=false;
+      st.hold=false;st.ruleDone=null;
       var f=st.afterSay;st.afterSay=null;
       if(f)f();
-    },st.kind);
+    };
+    st.ruleDone=finish;
+    say(INSTR[st.kind],finish,st.kind);
   }
   /* ===================================================================
      MACHINE A ETATS
@@ -1051,14 +1052,10 @@ button{font-family:inherit}
   $("resume").onclick=function(){setPause(false);};
   $("rep").onclick=function(){
     if(!st.running||st.paused)return;
+    if(st.voiceBusy&&st.ruleDone){      /* un seul bouton : un 2e clic coupe la voix, le jeu continue comme apres la fin de la consigne */
+      var d=st.ruleDone;st.ruleDone=null;stopSpeech();d();return;
+    }
     readRule(st.phase===S.RULE?st.afterSay:null);
-  };
-  /* Bouton bruitages : ne touche pas aux consignes vocales (bouton "reecouter") */
-  $("snd").onclick=function(){
-    st.sfx=!st.sfx;
-    $("snd").classList.toggle("off",!st.sfx);
-    $("snd").innerHTML=st.sfx?"&#128276;":"&#128277;";
-    unlockAudio();
   };
   document.addEventListener("pointerdown",unlockAudio,true);
   document.addEventListener("keydown",unlockAudio,true);
